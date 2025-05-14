@@ -1,7 +1,7 @@
 <!DOCTYPE module PUBLIC
         "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
         "https://checkstyle.org/dtds/configuration_1_3.dtd">
-
+<!-- kleine verandering om weer te kunnen pushen -->
 <module name="Checker">
     <module name="TreeWalker">
         <module name="AnnotationUseStyle"/>
