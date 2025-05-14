@@ -1,50 +1,75 @@
----
 name: Lint
 
 on: # yamllint disable-line rule:truthy
-  push:
-  pull_request:
+  [push, pull_request]
 
-
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
-  lint:
-  # Super-linter workflow running in check only mode
-  # See https://github.com/super-linter/super-linter#get-started
-
-  fix-lint-issues:
-    permissions:
-      # To write linting fixes
-      contents: write
-      # To write Super-linter status checks
-      statuses: write
+  build:
+    name: Lint
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+      # To report GitHub Actions status checks
+      statuses: write
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
+          # super-linter needs the full git history to get the
+          # list of files that changed across commits
           fetch-depth: 0
-      - name: Super-Linter
+
+      - name: Super-linter
         uses: super-linter/super-linter@v7.4.0 # x-release-please-version
         env:
+          # To report GitHub Actions status checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Set your fix mode variables to true
-          FIX_SHELL_SHFMT: true
-          FIX_YAML_PRETTIER: true
-          # To reuse the same Super-linter configuration that you use in the
-          # lint job without duplicating it, see
-          # https://github.com/super-linter/super-linter/blob/main/docs/run-linter-locally.md#share-environment-variables-between-environments
-      - name: Commit and push linting fixes
-        # Run only on:
-        # - Pull requests
-        # - Not on the default branch
-        if: >
-          github.event_name == 'pull_request' &&
-          github.ref_name != github.event.repository.default_branch
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
-          commit_message: "chore: fix linting issues"
-          commit_user_name: super-linter
-          commit_user_email: super-linter@super-linter.dev
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: master
+          LINTER_RULES_PATH: /
+          MARKDOWN_CONFIG_FILE: '.markdownlint.json'
+          VALIDATE_ANSIBLE: false
+          VALIDATE_ARM: false
+          VALIDATE_CLOJURE: false
+          VALIDATE_CLOUDFORMATION: false
+          VALIDATE_COFFEE: false
+          VALIDATE_CSHARP: false
+          VALIDATE_DART: false
+          VALIDATE_GO: false
+          VALIDATE_GROOVY: false
+          VALIDATE_JAVA: true
+          VALIDATE_JSCPD: false
+          VALIDATE_JSX: true
+          VALIDATE_KOTLIN: false
+          VALIDATE_KUBERNETES_KUBEVAL: false
+          VALIDATE_LATEX: false
+          VALIDATE_LUA: false
+          VALIDATE_NATURAL_LANGUAGE: false
+          VALIDATE_OPENAPI: false
+          VALIDATE_PERL: false
+          VALIDATE_PROTOBUF: false
+          VALIDATE_PYTHON: false
+          VALIDATE_PYTHON_BLACK: false
+          VALIDATE_PYTHON_FLAKE8: false
+          VALIDATE_PYTHON_ISORT: false
+          VALIDATE_PYTHON_PYLINT: false
+          VALIDATE_POWERSHELL: false
+          VALIDATE_R: false
+          VALIDATE_RAKU: false
+          VALIDATE_RUBY: false
+          VALIDATE_SNAKEMAKE_LINT: false
+          VALIDATE_SNAKEMAKE_SNAKEFMT: false
+          VALIDATE_STATES: false
+          VALIDATE_TEKTON: false
+          VALIDATE_TERRAFORM: false
+          VALIDATE_TERRAFORM_TERRASCAN: false
+          VALIDATE_TERRAGRUNT: false
+          VALIDATE_TSX: false
+          VALIDATE_TYPESCRIPT_ES: false
+          VALIDATE_TYPESCRIPT_STANDARD: false
+          VALIDATE_XML: false
